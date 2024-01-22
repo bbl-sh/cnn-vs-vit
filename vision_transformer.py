@@ -5,9 +5,9 @@ import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 from torch.utils.data import DataLoader
 
-class VisionTransformer(nn.Module):
+class vision_transformer(nn.Module):
     def __init__(self, num_classes = 10):
-        super(VisionTransformer, self).__init__()
+        super(vision_transformer, self).__init__()
         self.embedding = nn.Linear(28 * 28, 512)
         self.transformer = nn.TransformerEncoder(nn.TransformerEncoderLayer(d_model=512, nhead=8), num_layers=6)
         self.fc = nn.Linear(512, num_classes)
@@ -35,7 +35,7 @@ testset = MNIST(root='./data', train=False, download=True,
 
 testloader = DataLoader(testset, batch_size=64, shuffle=True, num_workers=0, pin_memory=True)
 
-net = VisionTransformer()
+net = vision_transformer()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 num_epochs = 2
@@ -52,7 +52,7 @@ for epoch in range(num_epochs):
 
         optimizer.zero_grad()
 
-        outputs = net(inputs)  # Changed from VisionTransformer(inputs) to net(inputs)
+        outputs = net(inputs) 
         loss = nn.CrossEntropyLoss()(outputs, labels)
         loss.backward()
         optimizer.step()
@@ -69,7 +69,7 @@ for epoch in range(num_epochs):
     with torch.no_grad():
         for data in testloader:
             inputs, labels = data
-            outputs = net(inputs)  # Changed from VisionTransformer(inputs) to net(inputs)
+            outputs = net(inputs) 
             test_loss += nn.CrossEntropyLoss()(outputs, labels).item()
             _, predicted = torch.max(outputs.data, 1)
             test_total += labels.size(0)
